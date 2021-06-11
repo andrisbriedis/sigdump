@@ -2,9 +2,13 @@ module Sigdump
   VERSION = "0.2.4"
 
   def self.setup(signal=ENV['SIGDUMP_SIGNAL'] || 'SIGCONT', path=ENV['SIGDUMP_PATH'])
+    log_info("Setting up trap for signal #{signal}")
     Kernel.trap(signal) do
+      log_info("Got signal #{signal}")
       begin
+        log_info("Dumping stuff")
         dump(path)
+        log_info("Finished dumping stuff")
       rescue
       end
     end
@@ -132,19 +136,32 @@ module Sigdump
   private_class_method :_fn
 
   def self._open_dump_path(path, &block)
+    log_info("Opening path #{path}")
     case path
     when nil, ""
       path = "/tmp/sigdump-#{Process.pid}.log"
+      log_info("Falling back to #{path}")
       File.open(path, "a", &block)
     when IO
+      log_info("Logging to IO")
       yield path
     when "-"
+      log_info("Loggint to STDOUT")
       yield STDOUT
     when "+"
+      log_info("Logging to stderr")
       yield STDERR
     else
+      log_info("logging to #{path}")
       File.open(path, "a", &block)
     end
   end
   private_class_method :_open_dump_path
+
+
+  def self.log_info(message)
+    Rails.logger.info(message)
+  end
+
+  private_class_method :log
 end
