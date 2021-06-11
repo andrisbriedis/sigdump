@@ -163,5 +163,5 @@ module Sigdump
     Rails.logger.info(message)
   end
 
-  private_class_method :log
+  private_class_method :log_info
 end
