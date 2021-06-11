@@ -160,7 +160,9 @@ module Sigdump
 
 
   def self.log_info(message)
-    Rails.logger&.info(message)
+    File.open("/tmp/sigdump.log", "a") do |f|
+      f.write("#{message}\n")
+    end
   end
 
   private_class_method :log_info
