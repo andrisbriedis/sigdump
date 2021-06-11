@@ -160,7 +160,7 @@ module Sigdump
 
 
   def self.log_info(message)
-    Rails.logger.info(message)
+    Rails.logger&.info(message)
   end
 
   private_class_method :log_info
